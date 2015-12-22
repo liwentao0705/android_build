@@ -324,16 +324,21 @@ ifneq (,$(user_variant))
   ifdef SM_RELEASE
     # Target is secure in release builds.
     ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=1
+  ifneq ($(strip $(FORCE_DISABLE_DEBUGGING)),true)
+    ifeq ($(user_variant),userdebug)
   else
     # Set device insecure for other builds.
     ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=0
   endif
 
-  ifeq ($(user_variant),userdebug)
-    # Pick up some extra useful tools
-    tags_to_install += debug
+      # Pick up some extra useful tools
+      tags_to_install += debug
+    else
+      enable_target_debugging :=
+    endif
   else
-    # Disable debugging in plain user builds.
+
+    # Force debugging off.
     enable_target_debugging :=
   endif
 
